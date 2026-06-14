@@ -1,0 +1,31 @@
+{% extends 'store/base.html' %}
+
+{% block title %}{{ category.name }} - Wristique | Elegance Around Every Wrist{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="mb-4">{{ category.name }}</h2>
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-3 col-6 mb-4">
+            <div class="card h-100">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <img src="https://via.placeholder.com/300" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h6 class="card-title">{{ product.name }}</h6>
+                    <span class="h5 text-primary">₹{{ product.final_price }}</span>
+                    <a href="{% url 'store:product_detail' product.slug %}" class="btn btn-sm btn-outline-primary w-100 mt-2">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center">No products found in this category.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

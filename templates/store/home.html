@@ -1,0 +1,217 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Wristique - Home | Elegance Around Every Wrist{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-md-6">
+                <h1>Elegance Around Every Wrist</h1>
+                <p class="lead">Discover premium handcrafted bracelets made with love and precision. Perfect for every occasion and style.</p>
+                <div class="d-flex gap-3">
+                    <a href="{% url 'store:shop' %}" class="btn btn-primary btn-lg">Shop Now</a>
+                    <a href="{% url 'store:faq' %}" class="btn btn-outline-primary btn-lg" style="border-color: white; color: white;">Learn More</a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div style="position: relative; animation: float 6s ease-in-out infinite;">
+                    <svg viewBox="0 0 400 400" style="width: 100%; max-width: 400px;">
+                        <!-- Decorative circle -->
+                        <circle cx="200" cy="200" r="150" fill="none" stroke="#D4AF37" stroke-width="2" opacity="0.5"/>
+                        <circle cx="200" cy="200" r="130" fill="none" stroke="#E8D5B7" stroke-width="1" opacity="0.3"/>
+                        
+                        <!-- Bracelet beads -->
+                        <g id="bracelet">
+                            <circle cx="200" cy="70" r="12" fill="#2D5016"/>
+                            <circle cx="265" cy="90" r="12" fill="#D4AF37"/>
+                            <circle cx="310" cy="135" r="12" fill="#2D5016"/>
+                            <circle cx="330" cy="200" r="12" fill="#D4AF37"/>
+                            <circle cx="310" cy="265" r="12" fill="#2D5016"/>
+                            <circle cx="265" cy="310" r="12" fill="#D4AF37"/>
+                            <circle cx="200" cy="330" r="12" fill="#2D5016"/>
+                            <circle cx="135" cy="310" r="12" fill="#D4AF37"/>
+                            <circle cx="90" cy="265" r="12" fill="#2D5016"/>
+                            <circle cx="70" cy="200" r="12" fill="#D4AF37"/>
+                            <circle cx="90" cy="135" r="12" fill="#2D5016"/>
+                            <circle cx="135" cy="90" r="12" fill="#D4AF37"/>
+                        </g>
+                        
+                        <!-- Center gem -->
+                        <circle cx="200" cy="200" r="25" fill="#FF6B6B" opacity="0.8"/>
+                        <circle cx="200" cy="200" r="20" fill="#FF8E8E"/>
+                        <circle cx="192" cy="192" r="6" fill="white" opacity="0.6"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories -->
+<section class="py-5">
+    <div class="container">
+        <div class="section-title">
+            <h2>🛍️ Shop by Category</h2>
+        </div>
+        <div class="row g-4">
+            {% for category in categories %}
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="card h-100 category-card shadow-md" style="cursor: pointer; transition: all 0.3s;">
+                    <div style="position: relative; overflow: hidden; height: 220px;">
+                        {% if category.image %}
+                        <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}" style="height: 100%; object-fit: cover; transition: transform 0.3s;">
+                        {% else %}
+                        <img src="/static/images/emerald_elegance.png" class="card-img-top" alt="{{ category.name }}" style="height: 100%; object-fit: cover; transition: transform 0.3s;">
+                        {% endif %}
+                    </div>
+                    <div class="card-body text-center d-flex flex-column justify-content-center">
+                        <h5 class="card-title">{{ category.name }}</h5>
+                        <a href="{% url 'store:category_products' category.slug %}" class="btn btn-outline-primary mt-3">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="py-5 featured-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>✨ Featured Bracelets</h2>
+        </div>
+        <div class="row g-4">
+            {% for product in featured %}
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="card h-100 shadow-lg">
+                    <div style="position: relative; overflow: hidden; height: 280px;">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 100%; object-fit: cover;">
+                        {% else %}
+                        <img src="/static/images/emerald_elegance.png" class="card-img-top" alt="{{ product.name }}" style="height: 100%; object-fit: cover;">
+                        {% endif %}
+                        {% if product.discount_price %}
+                        <div class="discount-badge">-{{ product.discount }}%</div>
+                        {% endif %}
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <span class="badge bg-emerald mb-2">{{ product.gender|title }}</span>
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text text-muted small flex-grow-1">{{ product.category.name }}</p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="price-current">₹{{ product.final_price }}</span>
+                            {% if product.discount_price %}
+                            <span class="price-original">₹{{ product.price }}</span>
+                            {% endif %}
+                        </div>
+                        <a href="{% url 'store:product_detail' product.slug %}" class="btn btn-primary btn-sm w-100">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-center text-muted">No featured products available yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- New Arrivals -->
+<section class="py-5">
+    <div class="container">
+        <div class="section-title">
+            <h2>🆕 New Arrivals</h2>
+        </div>
+        <div class="row g-4">
+            {% for product in new_arrivals %}
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="card h-100 shadow-lg">
+                    <div style="position: relative; overflow: hidden; height: 280px;">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 100%; object-fit: cover;">
+                        {% else %}
+                        <img src="/static/images/sapphire_serenity.png" class="card-img-top" alt="{{ product.name }}" style="height: 100%; object-fit: cover;">
+                        {% endif %}
+                        {% if product.discount_price %}
+                        <div class="discount-badge">-{{ product.discount }}%</div>
+                        {% endif %}
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <span class="badge bg-sapphire mb-2">{{ product.gender|title }}</span>
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text text-muted small flex-grow-1">{{ product.category.name }}</p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="price-current">₹{{ product.final_price }}</span>
+                            {% if product.discount_price %}
+                            <span class="price-original">₹{{ product.price }}</span>
+                            {% endif %}
+                        </div>
+                        <a href="{% url 'store:product_detail' product.slug %}" class="btn btn-primary btn-sm w-100">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-center text-muted">No new arrivals yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Best Sellers -->
+<section class="py-5 featured-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>⭐ Best Sellers</h2>
+        </div>
+        <div class="row g-4">
+            {% for product in best_sellers %}
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="card h-100 shadow-lg">
+                    <div style="position: relative; overflow: hidden; height: 280px;">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 100%; object-fit: cover;">
+                        {% else %}
+                        <img src="/static/images/rose_radiance.png" class="card-img-top" alt="{{ product.name }}" style="height: 100%; object-fit: cover;">
+                        {% endif %}
+                        {% if product.discount_price %}
+                        <div class="discount-badge">-{{ product.discount }}%</div>
+                        {% endif %}
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <span class="badge bg-rose mb-2">{{ product.gender|title }}</span>
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text text-muted small flex-grow-1">{{ product.category.name }}</p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="price-current">₹{{ product.final_price }}</span>
+                            {% if product.discount_price %}
+                            <span class="price-original">₹{{ product.price }}</span>
+                            {% endif %}
+                        </div>
+                        <a href="{% url 'store:product_detail' product.slug %}" class="btn btn-primary btn-sm w-100">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-center text-muted">No best sellers yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5" style="background: linear-gradient(135deg, #0F3460 0%, #2D5016 100%); color: white;">
+    <div class="container text-center">
+        <h2 class="mb-3" style="color: white;">Ready to Find Your Perfect Bracelet?</h2>
+        <p class="lead mb-4" style="color: #E8D5B7;">Browse our complete collection and find the perfect match for your style.</p>
+        <a href="{% url 'store:shop' %}" class="btn btn-primary btn-lg">Explore All Collections</a>
+    </div>
+</section>
+{% endblock %}

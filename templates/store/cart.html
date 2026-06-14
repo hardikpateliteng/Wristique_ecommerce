@@ -1,0 +1,126 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Cart - Wristique | Elegance Around Every Wrist{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="mb-4">
+        <h1 style="color: #0F3460; font-family: 'Playfair Display', serif;">🛒 Shopping Cart</h1>
+    </div>
+    
+    {% if request.user.is_authenticated %}
+        {% if cart_items %}
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header" style="background: linear-gradient(135deg, #0F3460 0%, #2D5016 100%); color: white;">
+                        <h5 class="mb-0">{{ cart_items|length }} Item{{ cart_items|length|pluralize }} in Cart</h5>
+                    </div>
+                </div>
+                
+                {% for item in cart_items %}
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body">
+                        <div class="row align-items-center g-3">
+                            <div class="col-md-2">
+                                <div style="position: relative; overflow: hidden; border-radius: 10px; height: 120px;">
+                                    {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;">
+                                    {% else %}
+                                    <img src="/static/images/crystal_clear.png" alt="{{ item.product.name }}" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;">
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <h5 style="color: #0F3460;">{{ item.product.name }}</h5>
+                                <p class="text-muted small mb-0">{{ item.product.category.name }}</p>
+                                <p class="text-muted small">SKU: {{ item.product.sku }}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <div style="color: #D4AF37; font-size: 1.3rem; font-weight: bold;">₹{{ item.product.final_price }}</div>
+                            </div>
+                            <div class="col-md-2">
+                                <form method="POST" action="{% url 'store:update_cart' item.product.id %}">
+                                    {% csrf_token %}
+                                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="99" class="form-control" style="border: 2px solid #D4AF37;">
+                                </form>
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <div style="color: #0F3460; font-size: 1.2rem; font-weight: bold; margin-bottom: 0.5rem;">₹{{ item.get_total }}</div>
+                                <a href="{% url 'store:remove_from_cart' item.product.id %}" class="btn btn-sm btn-danger" style="font-size: 0.8rem;">
+                                    <i class="fas fa-trash"></i> Remove
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                
+                <a href="{% url 'store:shop' %}" class="btn btn-outline-primary mt-3">
+                    <i class="fas fa-arrow-left"></i> Continue Shopping
+                </a>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow-lg" style="position: sticky; top: 20px;">
+                    <div class="card-header" style="background: linear-gradient(135deg, #D4AF37 0%, #E8D5B7 100%); color: #0F3460;">
+                        <h5 class="mb-0" style="font-family: 'Playfair Display', serif;">📊 Order Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
+                            <span style="color: #555;">Subtotal:</span>
+                            <span style="color: #0F3460; font-weight: bold;">₹{{ subtotal }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
+                            <span style="color: #555;">Tax (5%):</span>
+                            <span style="color: #0F3460; font-weight: bold;">₹{{ tax }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
+                            <span style="color: #555;">Shipping:</span>
+                            <span style="color: #0F3460; font-weight: bold;">
+                                {% if shipping == 0 %}<span class="badge bg-success">FREE</span>{% else %}₹{{ shipping }}{% endif %}
+                            </span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3 pb-3" style="border-bottom: 3px solid #D4AF37;">
+                            <strong style="color: #0F3460; font-size: 1.2rem;">Total Amount:</strong>
+                            <strong style="color: #D4AF37; font-size: 1.5rem; font-family: 'Playfair Display', serif;">₹{{ total }}</strong>
+                        </div>
+                        <a href="{% url 'store:checkout' %}" class="btn btn-primary btn-lg w-100 mt-3 mb-2">
+                            <i class="fas fa-credit-card"></i> Proceed to Checkout
+                        </a>
+                        <button class="btn btn-outline-secondary btn-sm w-100">Continue Shopping</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <div style="font-size: 4rem; color: #D4AF37; margin-bottom: 1rem;">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <h2 style="color: #0F3460; font-family: 'Playfair Display', serif;">Your cart is empty</h2>
+            <p class="text-muted mb-3">Start adding some beautiful bracelets to your cart!</p>
+            <a href="{% url 'store:shop' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-shopping-bag"></i> Browse Bracelets
+            </a>
+        </div>
+        {% endif %}
+    {% else %}
+    <div class="text-center py-5">
+        <div style="font-size: 4rem; color: #D4AF37; margin-bottom: 1rem;">
+            <i class="fas fa-lock"></i>
+        </div>
+        <h2 style="color: #0F3460; font-family: 'Playfair Display', serif;">Login Required</h2>
+        <p class="text-muted mb-3">Please login to view and manage your cart.</p>
+        <div class="d-flex gap-2 justify-content-center">
+            <a href="{% url 'accounts:login' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+            <a href="{% url 'accounts:register' %}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-user-plus"></i> Register
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

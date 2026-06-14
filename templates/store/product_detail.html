@@ -1,0 +1,173 @@
+{% extends 'store/base.html' %}
+
+{% block title %}{{ product.name }} - Wristique | Elegance Around Every Wrist{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'store:home' %}" style="color: #D4AF37;">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'store:shop' %}" style="color: #D4AF37;">Shop</a></li>
+            <li class="breadcrumb-item active">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-5">
+        <div class="col-md-5">
+            <div class="card border-0 shadow-lg">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded" style="width: 100%; object-fit: cover;">
+                {% else %}
+                <img src="/static/images/sunset_glow.png" alt="{{ product.name }}" class="img-fluid rounded" style="width: 100%; object-fit: cover;">
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="col-md-7">
+            <h1 style="color: #0F3460; font-family: 'Playfair Display', serif;">{{ product.name }}</h1>
+            <p class="text-muted mb-3">SKU: <strong>{{ product.sku }}</strong></p>
+            
+            <!-- Rating Section -->
+            <div class="mb-3">
+                <span style="color: #FFD700;">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                </span>
+                <span class="text-muted ms-2">(4.5/5 based on 12 reviews)</span>
+            </div>
+
+            <!-- Price Section -->
+            <div class="mb-4 p-3" style="background: linear-gradient(135deg, #F8F6F1 0%, #E8D5B7 100%); border-radius: 10px;">
+                {% if product.discount_price %}
+                <div>
+                    <span class="price-current h2" style="font-size: 2.5rem;">₹{{ product.discount_price }}</span>
+                    <span class="price-original ms-3 h4">₹{{ product.price }}</span>
+                    <span class="discount-badge ms-3">-{{ product.get_discount }}% OFF</span>
+                </div>
+                {% else %}
+                <span class="price-current h2" style="font-size: 2.5rem;">₹{{ product.price }}</span>
+                {% endif %}
+            </div>
+            
+            <!-- Product Info -->
+            <div class="mb-4">
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <strong style="color: #0F3460;">Category:</strong>
+                        <p><span class="badge bg-sapphire">{{ product.category.name }}</span></p>
+                    </div>
+                    <div class="col-6">
+                        <strong style="color: #0F3460;">Gender:</strong>
+                        <p><span class="badge bg-rose">{{ product.gender|title }}</span></p>
+                    </div>
+                </div>
+                
+                <div>
+                    <strong style="color: #0F3460;">Stock Status:</strong>
+                    <p>
+                        {% if product.stock > 0 %}
+                        <span class="badge bg-success">✓ In Stock ({{ product.stock }} available)</span>
+                        {% else %}
+                        <span class="badge bg-danger">✗ Out of Stock</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Description -->
+            <div class="mb-4 p-3 border rounded" style="background: #F8F6F1;">
+                <h5 style="color: #0F3460;">Description</h5>
+                <p style="color: #555;">{{ product.description }}</p>
+            </div>
+            
+            <!-- Add to Cart -->
+            {% if product.stock > 0 %}
+            <form method="POST" action="{% url 'store:add_to_cart' product.id %}" class="mb-4">
+                {% csrf_token %}
+                <div class="row g-2">
+                    <div class="col-auto">
+                        <label class="form-label fw-bold" style="color: #0F3460;">Quantity:</label>
+                        <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}" class="form-control" style="width: 80px; border: 2px solid #D4AF37;">
+                    </div>
+                    <div class="col-auto">
+                        <label class="form-label fw-bold" style="color: #0F3460;">Add:</label>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </form>
+            {% else %}
+            <button class="btn btn-secondary btn-lg" disabled>
+                <i class="fas fa-ban"></i> Out of Stock
+            </button>
+            {% endif %}
+            
+            <!-- Share Buttons -->
+            <div class="mt-4 pt-4 border-top">
+                <strong style="color: #0F3460;">Share this product:</strong>
+                <div class="mt-2">
+                    <a href="#" class="btn btn-sm btn-outline-primary ms-2"><i class="fab fa-facebook"></i> Share</a>
+                    <a href="#" class="btn btn-sm btn-outline-primary ms-2"><i class="fab fa-twitter"></i> Tweet</a>
+                    <a href="#" class="btn btn-sm btn-outline-primary ms-2"><i class="fab fa-pinterest"></i> Pin</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Related Products -->
+    {% if related_products %}
+    <div class="mt-5">
+        <div class="section-title">
+            <h3>🎁 Related Bracelets</h3>
+        </div>
+        <div class="row g-4">
+            {% for related in related_products %}
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="card h-100 shadow-lg">
+                    <div style="position: relative; overflow: hidden; height: 250px;">
+                        {% if related.image %}
+                        <img src="{{ related.image.url }}" class="card-img-top" alt="{{ related.name }}" style="height: 100%; object-fit: cover;">
+                        {% else %}
+                        <img src="/static/images/midnight_sparkle.png" class="card-img-top" alt="{{ related.name }}" style="height: 100%; object-fit: cover;">
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-title">{{ related.name }}</h6>
+                        <p class="price-current">₹{{ related.final_price }}</p>
+                        <a href="{% url 'store:product_detail' related.slug %}" class="btn btn-sm btn-outline-primary w-100">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Reviews -->
+    <div class="mt-5">
+        <h3>Reviews</h3>
+        {% for review in reviews %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <strong>{{ review.user.username }}</strong>
+                    <span class="text-warning">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= review.rating %}<i class="fas fa-star"></i>{% else %}<i class="far fa-star"></i>{% endif %}
+                        {% endfor %}
+                    </span>
+                </div>
+                <h5>{{ review.title }}</h5>
+                <p>{{ review.review }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <p>No reviews yet. Be the first to review!</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
