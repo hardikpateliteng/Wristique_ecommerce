@@ -25,7 +25,20 @@ pip install -r requirements.txt
 python manage.py runserver
 
 ## Screenshots
-(Add screenshots here)
+## Home Page
 
+![Home Page](screenshots/home.png)
+
+## Product Page
+
+![Products](screenshots/products.png)
+
+## Shopping Cart
+
+![Cart](screenshots/cart.png)
+
+## Login Page
+
+![Login](screenshots/login.png)
 ## Author
 Hardik Patel
