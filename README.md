@@ -27,7 +27,7 @@ python manage.py runserver
 ## Screenshots
 ## Home Page
 
-![Home Page](screenshots/home.png)
+![Home](screenshots/home.png)
 
 ## Product Page
 
