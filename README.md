@@ -27,18 +27,18 @@ python manage.py runserver
 ## Screenshots
 ## Home Page
 
-![Home](screenshots/home.png)
+![Home](screenshot/home.png)
 
 ## Product Page
 
-![Products](screenshots/products.png)
+![Products](screenshot/products.png)
 
 ## Shopping Cart
 
-![Cart](screenshots/cart.png)
+![Cart](screenshot/cart.png)
 
 ## Login Page
 
-![Login](screenshots/login.png)
+![Login](screenshot/login.png)
 ## Author
 Hardik Patel
